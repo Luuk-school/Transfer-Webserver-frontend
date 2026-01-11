@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'node:24' }
-    }
+    agent any
 
     environment {
         REPO_NAME = "frontend"
@@ -19,8 +17,8 @@ pipeline {
         }
 
         stage('Install') {
+            agent { docker { image 'node:24' } }
             steps {
-                // Use a local npm cache inside the workspace
                 sh '''
                     export NPM_CONFIG_CACHE=$PWD/.npm-cache
                     npm ci
@@ -29,6 +27,7 @@ pipeline {
         }
 
         stage('Build') {
+            agent { docker { image 'node:24' } }  
             steps {
                 sh '''
                     export NPM_CONFIG_CACHE=$PWD/.npm-cache
@@ -40,8 +39,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh """
-                docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-                docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
+                    docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
                 """
             }
         }
@@ -54,9 +53,9 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh """
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    docker push ${IMAGE_NAME}:${IMAGE_TAG}
-                    docker push ${IMAGE_NAME}:latest
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push ${IMAGE_NAME}:latest
                     """
                 }
             }
@@ -66,11 +65,11 @@ pipeline {
             steps {
                 sshagent([SSH_CREDENTIALS_ID]) {
                     sh """
-                    ssh ridderleeuw@${DOCKER_VM} '
-                      cd ~/deploy && \
-                      docker pull ${IMAGE_NAME}:latest && \
-                      docker compose up -d ${REPO_NAME}
-                    '
+                        ssh ridderleeuw@${DOCKER_VM} '
+                            cd ~/deploy && \
+                            docker pull ${IMAGE_NAME}:latest && \
+                            docker compose up -d ${REPO_NAME}
+                        '
                     """
                 }
             }
