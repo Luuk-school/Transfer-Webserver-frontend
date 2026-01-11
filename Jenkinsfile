@@ -4,6 +4,7 @@ pipeline {
     }
 
     environment {
+        NPM_CONFIG_CACHE = "/var/lib/jenkins/.npm"  // cache for NPM where Jenkins user has access
         REPO_NAME = "frontend"
         IMAGE_NAME = "luukschool/frontend"
         IMAGE_TAG = "${BUILD_NUMBER}"
