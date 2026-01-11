@@ -4,7 +4,6 @@ pipeline {
     }
 
     environment {
-        NPM_CONFIG_CACHE = "/var/lib/jenkins/.npm"  // cache for NPM where Jenkins user has access
         REPO_NAME = "frontend"
         IMAGE_NAME = "luukschool/frontend"
         IMAGE_TAG = "${BUILD_NUMBER}"
@@ -21,20 +20,26 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'npm ci'
+                // Use a local npm cache inside the workspace
+                sh '''
+                    export NPM_CONFIG_CACHE=$PWD/.npm-cache
+                    npm ci
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build' // builds Vite into /dist folder
+                sh '''
+                    export NPM_CONFIG_CACHE=$PWD/.npm-cache
+                    npm run build
+                '''
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 sh """
-                # Create a Docker image with Nginx serving the /dist folder
                 docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                 docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
                 """
