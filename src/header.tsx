@@ -14,7 +14,7 @@ function Header() {
   return (
     <div className="fixed top-0 left-0 right-0 bg-gray-900 p-4 z-50">
       <div className="text-white text-2xl font-bold flex justify-between items-center">
-        <span>We can transfer</span>
+        <span>Bjorn can transfer</span>
         <div className="flex gap-2">
           <button
             className="px-4 py-2 bg-yellow-500 text-black font-bold rounded hover:bg-yellow-400"
