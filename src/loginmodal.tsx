@@ -67,6 +67,12 @@ function LoginModal({ isLoginOpen, isSignupOpen, onClose }: LoginModalProps) {
               className="space-y-4"
               onSubmit={(e) => {
                 e.preventDefault()
+                // Tijdelijke bypass voor test account
+                if (loginName === 'test' && loginPass === 'test') { //
+                  setStatus('Tijdelijk ingelogd als test gebruiker') //
+                  navigate('/home') //
+                  return //
+                }//Tijdelijk code
                 apiPost('/auth/login', { username: loginName, password: loginPass }, '/home')
               }}
             >

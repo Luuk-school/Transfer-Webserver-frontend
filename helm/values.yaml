@@ -1,0 +1,5 @@
+image:
+  repository: luukschool/frontend
+  tag: latest
+service:
+  port: 443

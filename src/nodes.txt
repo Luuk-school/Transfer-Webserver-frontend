@@ -1,0 +1,5 @@
+omdat je het anders later gaat vergeten wat je nog moet doen.
+
+
+
+De room /home naar /room werkt nog niet, je creert nu wel een sessie, maar de beeld veranderd niet.
