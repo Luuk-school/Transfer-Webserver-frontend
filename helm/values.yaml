@@ -3,3 +3,4 @@ image:
   tag: latest
 service:
   port: 4999
+  targetPort: 80
