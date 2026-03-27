@@ -1,6 +1,6 @@
 image:
   repository: luukschool/frontend
-  tag: latest
+  tag: "ff5ec27b659bd0d0f14c0f0e60400a0d4408827e"
 service:
   port: 4999
   targetPort: 80
