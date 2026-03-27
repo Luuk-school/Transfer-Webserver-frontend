@@ -1,8 +1,11 @@
-name: transfer-main-backend-Docker-Build
+name: transfer-frontend-Docker-Build
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
+
+permissions:
+  contents: write
 
 jobs:
   publish_image:
@@ -11,8 +14,16 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: build image
-        run: docker build ./ -t luukschool/frontend:latest
+        run: docker build ./ -t luukschool/frontend:${{ github.sha }}
       - name: push image
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u luukschool --password-stdin
-          docker push luukschool/frontend:latest
+          docker push luukschool/frontend:${{ github.sha }}
+      - name: update helm values
+        run: |
+          sed -i 's/tag:.*/tag: "${{ github.sha }}"/' helm/values.yaml
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add helm/values.yaml
+          git commit -m "bump image tag to ${{ github.sha }}"
+          git push
